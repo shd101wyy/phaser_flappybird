@@ -1,7 +1,7 @@
 'use strict'
 
 // Create our 'main' state that will contain the game
-let mainState = {
+var mainState = {
     preload: function() {
         // This function will be executed at the beginning
         // That's where we load the images and sounds
@@ -159,7 +159,7 @@ let mainState = {
 }
 
 // Initialize Phaser, and create a 400px by 490px game
-let game = new Phaser.Game(400, 490);
+var game = new Phaser.Game(400, 490);
 
 // Add the 'mainState' and call it 'main'
 game.state.add('main', mainState)
