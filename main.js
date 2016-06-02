@@ -1,3 +1,5 @@
+'use strict'
+
 // Create our 'main' state that will contain the game
 let mainState = {
     preload: function() {
@@ -27,7 +29,7 @@ let mainState = {
       // Center the game horizontally and vertically
       game.scale.pageAlignHorizontally = true;
       game.scale.pageAlignVertically = true;
-      
+
 
       // Change the background color of the game to blue
       game.stage.backgroundColor = '#71c5cf';
