@@ -7,7 +7,12 @@ module.exports = {
 	},
 	module: {
 		loaders: [
-			 { test: /\.(js|jsx)$/, include: [path.resolve(__dirname, 'game/')], exclude: [/node_modules/], loader: 'babel' }
+			 { test: /\.(js|jsx)$/,
+				 include: [path.resolve(__dirname, 'game/')],
+				 exclude: [/node_modules/],
+				 loader: 'babel',
+				 query: { presets: ['es2015'] }
+			}
 		]
 	}
 }
