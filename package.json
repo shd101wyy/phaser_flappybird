@@ -1,0 +1,26 @@
+{
+  "name": "phaser_flappybird",
+  "version": "1.0.0",
+  "description": "Simple flappy bird clone made by Phaser",
+  "main": "webpack.config.js",
+  "dependencies": {},
+  "devDependencies": {
+    "babel-core": "^6.9.1",
+    "babel-loader": "^6.2.4",
+    "babel-preset-es2015": "^6.9.0",
+    "webpack": "^1.13.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shd101wyy/phaser_flappybird.git"
+  },
+  "author": "Yiyi Wang",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/shd101wyy/phaser_flappybird/issues"
+  },
+  "homepage": "https://github.com/shd101wyy/phaser_flappybird#readme"
+}
