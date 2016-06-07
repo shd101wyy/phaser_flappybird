@@ -3,6 +3,7 @@
 let Bird = require('../prefabs/bird')
 let Ground = require('../prefabs/ground')
 let PipeGroup = require('../prefabs/pipeGroup')
+let Scoreboard = require('../prefabs/scoreboard')
 
 function Play() {}
 
@@ -30,22 +31,61 @@ Play.prototype = {
 
     // add keyboard controls
     let flapKey = this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR)
+    flapKey.onDown.addOnce(this.startGame, this)
     flapKey.onDown.add(this.bird.flap, this.bird)
 
     // add mouse/touch controls
-    this.input.onDown.add(this.bird.flap, this.bird)
+    this.game.input.onDown.addOnce(this.startGame, this)
+    this.game.input.onDown.add(this.bird.flap, this.bird)
 
+
+    // instructions
+    this.instructionGroup = this.game.add.group()
+    this.instructionGroup.add(this.game.add.sprite(this.game.width/2, 100,'getReady'))
+    this.instructionGroup.add(this.game.add.sprite(this.game.width/2, 325,'instructions'))
+    this.instructionGroup.setAll('anchor.x', 0.5)
+    this.instructionGroup.setAll('anchor.y', 0.5)
+
+    this.score = 0
+
+    this.scoreText = this.game.add.bitmapText(this.game.width/2, 10, 'flappyfont', this.score.toString(), 24)
+    this.scoreText.visible = false
+
+    this.scoreSound = this.game.add.audio('score')
+
+  },
+  update: function() {
+    if (this.bird.alive) {
+      this.game.physics.arcade.collide(this.bird, this.ground, this.deathHandler, null, this)
+
+      this.pipes.forEach((pipeGroup)=> {
+        this.checkScore(pipeGroup)
+        this.game.physics.arcade.collide(this.bird, pipeGroup, this.deathHandler, null, this)
+      })
+    }
+  },
+  checkScore: function(pipeGroup) {
+    if (pipeGroup.exists && !pipeGroup.hasScored && pipeGroup.topPipe.world.x <= this.bird.world.x) {
+      pipeGroup.hasScored = true
+      this.score += 1
+      this.scoreText.setText(this.score.toString())
+      this.scoreSound.play()
+    }
+
+  },
+  startGame: function() {
+    this.bird.body.allowGravity = true
+    this.bird.alive = true
+
+    this.score = 0
+
+    // add a timer
     // add a timer
     this.pipeGenerator = this.game.time.events.loop(Phaser.Timer.SECOND * 1.25, this.generatePipes, this)
     this.pipeGenerator.timer.start()
 
-  },
-  update: function() {
-    this.game.physics.arcade.collide(this.bird, this.ground, this.deathHandler, null, this)
-
-    this.pipes.forEach((pipeGroup)=> {
-      this.game.physics.arcade.collide(this.bird, pipeGroup, this.deathHandler, null, this)
-    })
+    this.instructionGroup.destroy()
+    this.scoreText.visible = true
   },
   generatePipes: function() {
     let pipeY = this.game.rnd.integerInRange(-100, 100)
@@ -59,12 +99,20 @@ Play.prototype = {
     //pipeGroup.y = pipeY
   },
   deathHandler: function() {
-    this.game.state.start('gameover')
+    console.log('game over')
+    this.bird.alive = false
+    this.pipes.callAll('stop')
+    this.pipeGenerator.timer.stop()
+    this.ground.stopScroll()
+    this.scoreboard = new Scoreboard(this.game)
+    this.game.add.existing(this.scoreboard)
+    this.scoreboard.show(this.score)
   },
   shutdown: function() {
     this.game.input.keyboard.removeKey(Phaser.Keyboard.SPACEBAR)
     this.bird.destroy()
     this.pipes.destroy()
+    this.scoreboard.destroy()
   }
 }
 
